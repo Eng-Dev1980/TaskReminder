@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="TaskReminder.MVVM.View.TasksPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:cv="clr-namespace:TaskReminder.Resources.Utilitys"
+    xmlns:templates="clr-namespace:TaskReminder.Resources.Templates"
+    x:Name="TaskContentPage"
+    BackgroundImageSource="background.png">
+
+    <ContentPage.Resources>
+        <cv:DoubleToIntConverter x:Key="DoubleToInt" />
+        <cv:DayTitleConverter x:Key="dayTitleConverter" />
+    </ContentPage.Resources>
+
+    <Grid>
+        <!--  Must Be Fully Gradient  -->
+        <Grid.RowDefinitions>
+            <RowDefinition Height="35*" />
+            <RowDefinition Height="65*" />
+        </Grid.RowDefinitions>
+        <!--  The Header Controls  -->
+        <Border
+            x:Name="HeaderBorder"
+            Grid.Row="0"
+            Margin="3"
+            HorizontalOptions="FillAndExpand">
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="20" />
+            </Border.StrokeShape>
+            <Grid
+                HorizontalOptions="FillAndExpand"
+                RowDefinitions="25*,75*">
+                <Grid
+                    Grid.Row="0"
+                    ColumnDefinitions="18*,64*,18*"
+                    HorizontalOptions="FillAndExpand">
+
+
+                    <Border
+                        Grid.Column="0"
+                        Margin="0,5,5,0"
+                        HeightRequest="60"
+                        WidthRequest="60">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="24" />
+                        </Border.StrokeShape>
+                        <Border.BackgroundColor>
+                            <Color>
+                                #50FFFFFF
+                            </Color>
+                        </Border.BackgroundColor>
+                        <ImageButton
+                            x:Name="AddTaskButton"
+                            BackgroundColor="Transparent"
+                            Clicked="OnAddTaskButtonClicked"
+                            HorizontalOptions="FillAndExpand"
+                            Opacity="0.6"
+                            VerticalOptions="CenterAndExpand">
+                            <ImageButton.Source>
+                                <FontImageSource
+                                    FontFamily="FPG"
+                                    Glyph="&#xE808;"
+                                    Size="32"
+                                    Color="#8B008B" />
+                            </ImageButton.Source>
+                        </ImageButton>
+                    </Border>
+
+                    <Label
+                        Grid.Column="1"
+                        Margin="0,5"
+                        HorizontalOptions="CenterAndExpand"
+                        Style="{Binding Source={StaticResource H1Bold}}"
+                        Text="{Binding DaysList[0], Converter={StaticResource dayTitleConverter}}"
+                        VerticalTextAlignment="Center" />
+
+                    <Border
+                        Grid.Column="2"
+                        Margin="5,5,0,0"
+                        HeightRequest="60"
+                        WidthRequest="60">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="24" />
+                        </Border.StrokeShape>
+
+                        <Border.BackgroundColor>
+                            <Color>
+                                #30FFFFFF
+                            </Color>
+                        </Border.BackgroundColor>
+
+
+                        <ImageButton
+                            Margin="-5"
+                            Background="Transparent"
+                            HorizontalOptions="FillAndExpand"
+                            Opacity="0.6"
+                            VerticalOptions="Center">
+                            <ImageButton.Source>
+                                <FontImageSource
+                                    FontFamily="FPG"
+                                    Glyph="&#xE810;"
+                                    Size="32"
+                                    Color="#8B008B" />
+                            </ImageButton.Source>
+                        </ImageButton>
+
+                    </Border>
+                    <!--  Since .NET Maui still doesnt support DatePickers Focus and Unfocus to Invoke datePicker's Show dialoge , I have beeen forced to use this trick  -->
+                    <DatePicker
+                        x:Name="MonthRangeDatePicker"
+                        Grid.Column="2"
+                        Margin="0,5,-30,0"
+                        Background="Transparent"
+                        Date="{Binding SelectedDateTime}"
+                        DateSelected="OnMonthRangeDatePickerDateSelected"
+                        HeightRequest="60"
+                        MaximumDate="12/30/2040"
+                        MinimumDate="01/01/2022"
+                        Opacity="0"
+                        WidthRequest="60" />
+
+                </Grid>
+
+                <CollectionView
+                    x:Name="MonthDaysCollectionView"
+                    Grid.Row="1"
+                    HorizontalOptions="CenterAndExpand"
+                    ItemsSource="{Binding DaysList}"
+                    SelectionChanged="OnMonthDaysCollectionViewSelectionChanged"
+                    SelectionMode="Single"
+                    VerticalOptions="CenterAndExpand">
+                    <CollectionView.ItemsLayout>
+                        <LinearItemsLayout Orientation="Horizontal" />
+                    </CollectionView.ItemsLayout>
+
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Border
+                                Margin="5"
+                                BackgroundColor="WhiteSmoke"
+                                HeightRequest="110"
+                                HorizontalOptions="CenterAndExpand"
+                                PropertyChanged="ItemBorder_PropertyChanged"
+                                VerticalOptions="CenterAndExpand"
+                                WidthRequest="80">
+                                <!--<Border.Background>
+                                    <SolidColorBrush Color="WhiteSmoke"/>
+                                -->
+                                <!--<LinearGradientBrush EndPoint="1,0">
+                                        <GradientStop Offset="0.0" Color="#f1477d" />
+                                        <GradientStop Offset="0.45" Color="#d83e6f" />
+                                        <GradientStop Offset="0.75" Color="#bd3560" />
+                                        <GradientStop Offset="1.0" Color="#a32e53" />
+                                    </LinearGradientBrush>-->
+                                <!--
+                                </Border.Background>-->
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="24" />
+                                </Border.StrokeShape>
+                                <Border.Resources>
+                                    <Style TargetType="Border">
+                                        <Setter Property="VisualStateManager.VisualStateGroups">
+                                            <VisualStateGroupList>
+                                                <VisualStateGroup x:Name="CommonStates">
+                                                    <VisualState x:Name="Normal" />
+                                                    <VisualState x:Name="Selected">
+                                                        <VisualState.Setters>
+                                                            <Setter Property="BackgroundColor" Value="{Binding Source={StaticResource MyMagenta}}" />
+                                                        </VisualState.Setters>
+                                                    </VisualState>
+                                                </VisualStateGroup>
+                                            </VisualStateGroupList>
+                                        </Setter>
+                                    </Style>
+                                </Border.Resources>
+                                <!--<Border.Style>
+           <Style TargetType="Border">
+               <Setter Property="AnchorY" Value="10" />
+               <Setter Property="AnchorX" Value="22" />
+           </Style>
+       </Border.Style>-->
+                                <Grid RowDefinitions="60*,40*">
+                                    <Label
+                                        Grid.Row="0"
+                                        Margin="2"
+                                        FontAttributes="Bold"
+                                        FontSize="34"
+                                        HorizontalOptions="CenterAndExpand"
+                                        HorizontalTextAlignment="Center"
+                                        Text="{Binding DayNumber}"
+                                        TextColor="Black"
+                                        VerticalOptions="CenterAndExpand" />
+
+                                    <Label
+                                        Grid.Row="1"
+                                        Margin="2"
+                                        Padding="2"
+                                        FontSize="18"
+                                        HorizontalOptions="CenterAndExpand"
+                                        HorizontalTextAlignment="Center"
+                                        Text="{Binding DayNameAbbreviation}"
+                                        TextColor="Black"
+                                        VerticalOptions="Start" />
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+
+                </CollectionView>
+
+                <Border
+                    Grid.Row="1"
+                    HeightRequest="20"
+                    HorizontalOptions="FillAndExpand"
+                    IsEnabled="False"
+                    StrokeThickness="0"
+                    VerticalOptions="End">
+                    <Border.Background>
+                        <LinearGradientBrush EndPoint="0,1">
+                            <GradientStop Offset="0.0" Color="#01ffffff" />
+                            <GradientStop Offset="0.25" Color="#02ffffff" />
+                            <GradientStop Offset="0.65" Color="#06ffffff" />
+                            <GradientStop Offset="0.85" Color="#09ffffff" />
+                            <GradientStop Offset="1.0" Color="#11ffffff" />
+                        </LinearGradientBrush>
+                    </Border.Background>
+                </Border>
+
+            </Grid>
+        </Border>
+        <!--  The Body Controls  -->
+        <Border
+            Grid.Row="1"
+            Margin="5,10,5,2"
+            Background="Transparent"
+            Stroke="Transparent"
+            StrokeThickness="0">
+
+            <Border.Shadow>
+                <Shadow
+                    Brush="White"
+                    Opacity="1"
+                    Radius="100"
+                    Offset="-10,-90" />
+            </Border.Shadow>
+            <CollectionView
+                x:Name="DataCollectionView"
+                ItemsSource="{Binding Tasks}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <VerticalStackLayout>
+                            <SwipeView>
+                                <SwipeView.LeftItems>
+                                    <SwipeItems>
+                                        <SwipeItemView WidthRequest="100">
+                                            <HorizontalStackLayout x:Name="HorizontaStack">
+                                                <Button
+                                                    BackgroundColor="Transparent"
+                                                    BindingContext="{Binding Source={x:Reference DataCollectionView}, Path=BindingContext}"
+                                                    Command="{Binding DeleteTaskCommand}"
+                                                    CommandParameter="{Binding Source={x:Reference HorizontaStack}, Path=BindingContext}"
+                                                    FontFamily="FPG"
+                                                    FontSize="24"
+                                                    HorizontalOptions="Center"
+                                                    Text=""
+                                                    TextColor="#8c3a51"
+                                                    VerticalOptions="Center" />
+                                                <Button
+                                                    BackgroundColor="Transparent"
+                                                    BindingContext="{Binding Path=.}"
+                                                    Clicked="OnEditTaskButtonClicked"
+                                                    FontFamily="FPG"
+                                                    FontSize="24"
+                                                    HorizontalOptions="Center"
+                                                    Text=""
+                                                    TextColor="HotPink"
+                                                    VerticalOptions="Center" />
+                                            </HorizontalStackLayout>
+                                        </SwipeItemView>
+                                    </SwipeItems>
+                                </SwipeView.LeftItems>
+                                <templates:TaskCardItems BindingContext="{Binding Path=.}" />
+                            </SwipeView>
+                            <Line
+                                Margin="10,0"
+                                BackgroundColor="Black"
+                                Stroke="Black"
+                                X1="0"
+                                X2="400"
+                                Y1="0"
+                                Y2="0" />
+                        </VerticalStackLayout>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </Border>
+    </Grid>
+</ContentPage>

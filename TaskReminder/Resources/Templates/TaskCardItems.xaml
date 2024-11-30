@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView
+    x:Class="TaskReminder.Resources.Templates.TaskCardItems"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:cv="clr-namespace:TaskReminder.Resources.Utilitys"
+    BackgroundColor="Transparent">
+
+    <ContentView.Resources>
+        <cv:UnixToDateTimeConverter x:Key="unixToDateTimeConverter" />
+    </ContentView.Resources>
+    <ScrollView>
+        <Grid
+            Margin="5"
+            ColumnDefinitions="30*,70*"
+            HeightRequest="100">
+
+            <VerticalStackLayout
+                Grid.Column="0"
+                Margin="2"
+                HorizontalOptions="Center"
+                VerticalOptions="CenterAndExpand">
+                <Label
+                    Margin="0,1,0,0"
+                    HorizontalOptions="Center"
+                    HorizontalTextAlignment="Center"
+                    Style="{Binding Source={StaticResource TaskSideLabel}}"
+                    Text="{Binding DeadlineDateTime, Converter={StaticResource unixToDateTimeConverter}, StringFormat='Deadline ⤵ {0}'}" />
+
+                <Label
+                    Margin="0,1,0,0"
+                    HorizontalOptions="Center"
+                    HorizontalTextAlignment="Center"
+                    Style="{Binding Source={StaticResource TaskSideLabel}}"
+                    Text="{Binding PriorityTitle, StringFormat='Priority: {0}'}" />
+
+                <Label
+                    Margin="0,1,0,0"
+                    HorizontalOptions="Center"
+                    HorizontalTextAlignment="Center"
+                    Style="{Binding Source={StaticResource TaskSideLabel}}"
+                    Text="{Binding Progress, StringFormat='Progress {0}%'}" />
+
+            </VerticalStackLayout>
+            <Frame
+                Grid.Column="1"
+                Margin="2"
+                Padding="5"
+                CornerRadius="8">
+                <Frame.Background>
+                    <LinearGradientBrush EndPoint="1,1">
+                        <GradientStop Offset="0.1" Color="#fef2f6" />
+                        <GradientStop Offset="0.3" Color="#f5d8e2" />
+                        <GradientStop Offset="0.5" Color="#f5d8e2" />
+                        <GradientStop Offset="1.0" Color="#fef2f6" />
+                    </LinearGradientBrush>
+                </Frame.Background>
+
+                <Frame.Shadow>
+                    <Shadow
+                        Brush="SlateGray"
+                        Opacity="0.85"
+                        Radius="3"
+                        Offset="1,1" />
+                </Frame.Shadow>
+                <Grid
+                    HorizontalOptions="FillAndExpand"
+                    RowDefinitions="40*,60*"
+                    VerticalOptions="FillAndExpand">
+                    <Label
+                        Grid.Row="0"
+                        Margin="2"
+                        HorizontalOptions="FillAndExpand"
+                        Style="{Binding Source={StaticResource MainLabel}}"
+                        Text="{Binding Title}"
+                        VerticalOptions="CenterAndExpand" />
+
+                    <!--  <Label  -->
+
+                    <Label
+                        Grid.Row="1"
+                        Margin="2"
+                        HorizontalOptions="FillAndExpand"
+                        Style="{Binding Source={StaticResource SubLabel}}"
+                        Text="{Binding Description}"
+                        VerticalOptions="FillAndExpand" />
+
+                </Grid>
+            </Frame>
+
+        </Grid>
+    </ScrollView>
+</ContentView>

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="TaskReminder.MVVM.View.AddOrEditTaskPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:cv="clr-namespace:TaskReminder.Resources.Utilitys"
+    x:Name="AddOrEditTaskContentPage"
+    Title="AddOrEditTaskPage"
+    BackgroundImageSource="background.png">
+    <ContentPage.Resources>
+        <cv:DateTimeToUnixConverter x:Key="dateTimeToUnixConverter" />
+    </ContentPage.Resources>
+    <ScrollView>
+        <VerticalStackLayout>
+            <Image
+                Margin="0,25"
+                Aspect="AspectFit"
+                HeightRequest="180"
+                Source="tasks.png" />
+
+            <Editor
+                HorizontalTextAlignment="Start"
+                Placeholder="Enter Task Title"
+                Style="{StaticResource Login}"
+                Text="{Binding Task.Title, Mode=TwoWay}" />
+
+
+            <DatePicker Date="{Binding Task.CreatedDateTime, Converter={StaticResource dateTimeToUnixConverter}, Mode=TwoWay}" />
+
+
+            <DatePicker Date="{Binding Task.DeadlineDateTime, Converter={StaticResource dateTimeToUnixConverter}, Mode=TwoWay}" />
+
+
+            <Picker
+                Title="Select a Priority"
+                SelectedIndexChanged="OnPriorityPickerSelectedIndexChanged">
+                <Picker.ItemsSource>
+                    <x:Array Type="{x:Type x:String}">
+                        <x:String>Low</x:String>
+                        <x:String>Medium</x:String>
+                        <x:String>Hi</x:String>
+                        <x:String>Critical</x:String>
+                    </x:Array>
+                </Picker.ItemsSource>
+            </Picker>
+
+            <HorizontalStackLayout>
+                <!--<Label
+                    Margin="5"
+                    Text="{Binding Source={x:Reference ProgressSlider}, Path=Value, StringFormat='Progress Precent : {0:0}%'}" />-->
+                <Slider
+                    x:Name="ProgressSlider"
+                    Maximum="100"
+                    Minimum="0"
+                    WidthRequest="250"
+                    Value="{Binding Task.Progress, Mode=TwoWay}" />
+
+            </HorizontalStackLayout>
+
+
+            <Border
+                Margin="2"
+                BackgroundColor="#aaffffff"
+                HeightRequest="150">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="5" />
+                </Border.StrokeShape>
+
+                <Border.Stroke>
+                    <SolidColorBrush Color="Black" />
+                </Border.Stroke>
+                <Editor
+                    Placeholder="Enter Description"
+                    Style="{StaticResource Description}"
+                    Text="{Binding Task.Description, Mode=TwoWay}" />
+            </Border>
+
+
+            <Button
+                x:Name="AddTaskButton"
+                Margin="15"
+                Command="{Binding AddOrEditTaskCommand}"
+                CommandParameter="{Binding Source={x:Reference AddOrEditTaskContentPage}, Path=.}"
+                HorizontalOptions="Center"
+                Text="Add"
+                VerticalOptions="Center" />
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
